@@ -1,0 +1,195 @@
+Calculadora
+
+package com.example.prueba2;
+
+public class Calculadora {
+
+    public static double sumar(double a, double b) {
+        return a + b;
+    }
+
+    public static double restar(double a, double b) {
+        return a - b;
+    }
+
+    public static double multiplicar(double a, double b) {
+        return a * b;
+    }
+
+    public static double dividir(double a, double b) {
+        if (b == 0) {
+            throw new ArithmeticException("No se puede dividir por cero");
+        }
+        return a / b;
+    }
+}
+
+
+
+MAIN.XML
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center_horizontal"
+    tools:context=".MainActivity">
+
+    <EditText
+        android:id="@+id/txtNum1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ingresa el primer número"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/txtNum2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="Ingresa el segundo número"
+        android:inputType="numberDecimal" />
+
+</LinearLayout>
+
+
+MENU.XML
+
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/suma"
+        android:title="suma"
+        android:icon="@drawable/img1"
+        app:showAsAction="always"
+        /><item
+        android:id="@+id/resta"
+        android:title="resta"
+        android:icon="@drawable/img2"
+        app:showAsAction="always"
+        /><item
+        android:id="@+id/division"
+        android:title="division"
+        android:icon="@drawable/img10"
+        app:showAsAction="always"
+        /><item
+        android:id="@+id/multiplicacion"
+        android:title="multiplicacion"
+        android:icon="@drawable/img3"
+        app:showAsAction="always"
+        />
+
+
+
+    <item
+        android:id="@+id/SUMA"
+        android:title="SUMA"
+        app:showAsAction="ifRoom"
+        />
+    <item
+        android:id="@+id/RESTA"
+        android:title="RESTA"
+        app:showAsAction="ifRoom"
+        />
+    <item
+        android:id="@+id/DIVISION"
+        android:title="DIVISION"
+        app:showAsAction="ifRoom"
+        />
+    <item
+        android:id="@+id/MULTIPLICACION"
+        android:title="MULTIPLICACION"
+        app:showAsAction="ifRoom"
+        />
+
+
+
+</menu>
+
+
+
+MAINACTIVITY
+
+package com.example.myamenupuntitosnuevo;
+
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.EdgeToEdge;
+
+public class MainActivity extends AppCompatActivity {
+
+    private EditText txtNum1, txtNum2;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+
+        // Referencia a los EditText del layout
+        txtNum1 = findViewById(R.id.txtNum1);
+        txtNum2 = findViewById(R.id.txtNum2);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menusito, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        String input1 = txtNum1.getText().toString().trim();
+        String input2 = txtNum2.getText().toString().trim();
+
+        // Validación de campos vacíos
+        if (input1.isEmpty() || input2.isEmpty()) {
+            Toast.makeText(this, "Ingresa ambos números primero", Toast.LENGTH_SHORT).show();
+            return super.onOptionsItemSelected(item);
+        }
+
+        double num1 = Double.parseDouble(input1);
+        double num2 = Double.parseDouble(input2);
+        double resultado = 0;
+        String operacion = "";
+
+        int id = item.getItemId();
+
+        // Evaluación de opciones tanto del ícono (Toolbar) como del menú de tres puntos[cite: 6]
+        if (id == R.id.sumita || id == R.id.Sumita) {
+            resultado = Calculadora.sumar(num1, num2);
+            operacion = "El resultado de la suma es: ";
+        } else if (id == R.id.restita || id == R.id.Restita) {
+            resultado = Calculadora.restar(num1, num2);
+            operacion = "El resultado de la resta es: ";
+        } else if (id == R.id.multiplicadita || id == R.id.Multiplica) {
+            resultado = Calculadora.multiplicar(num1, num2);
+            operacion = "El resultado de la multiplicación es: ";
+        } else if (id == R.id.partidita || id == R.id.Divide) {
+            if (num2 == 0) {
+                Toast.makeText(this, "No se puede dividir entre cero", Toast.LENGTH_SHORT).show();
+                return super.onOptionsItemSelected(item);
+            }
+            resultado = Calculadora.dividir(num1, num2);
+            operacion = "El resultado de la división es: ";
+        }
+
+        if (!operacion.isEmpty()) {
+            Toast.makeText(this, operacion + resultado, Toast.LENGTH_LONG).show();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+}
